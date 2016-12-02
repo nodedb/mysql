@@ -1,5 +1,5 @@
 {
-  "main": "./strategy",
+  "main": "./mysql",
   "dependencies": {
     "lodash": "^4.17.2",
     "mysql": "^2.12.0"
