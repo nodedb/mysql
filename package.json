@@ -1,5 +1,6 @@
 {
   "main": "./mysql",
+  "driverName": "MySQL",
   "dependencies": {
     "lodash": "^4.17.2",
     "mysql": "^2.12.0"

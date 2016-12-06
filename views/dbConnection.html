@@ -1,0 +1,19 @@
+<ul>
+
+    <li ng-repeat="db in vm.databaseList">
+
+        {{ db.database }}
+
+        <ul ng-if="db.tables.length > 0">
+
+            <li ng-repeat="table in db.tables">
+
+                {{ table.name }}
+
+            </li>
+
+        </ul>
+
+    </li>
+
+</ul>
