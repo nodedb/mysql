@@ -1,19 +1,63 @@
-<ul>
 
-    <li ng-repeat="db in vm.databaseList">
+<div class="pane-group">
 
-        {{ db.database }}
+    <div class="pane pane-sm sidebar">
 
-        <ul ng-if="db.tables.length > 0">
+        <nav class="nav-group">
 
-            <li ng-repeat="table in db.tables">
+            <a
+                ng-repeat="db in vm.databaseList"
+                ui-sref="^.connection({ db: db.database })"
+                class="nav-group-item"
+                ng-class="{ active: db.database === vm.currentDb }">
+                <span class="fa fa-database"></span>
+                {{ db.database }}
+            </a>
 
-                {{ table.name }}
+        </nav>
 
-            </li>
+    </div>
 
-        </ul>
+    <div class="pane">
 
-    </li>
+        <!--<div class="padded-more">-->
 
-</ul>
+            <header class="toolbar toolbar-header">
+
+                <div class="toolbar-actions">
+                    <div class="btn-group">
+                        <button
+                            ng-repeat="icon in vm.icons"
+                            class="btn btn-extra-large btn-default">
+                            <div
+                                class="fa fa-2x"
+                                ng-class="icon.icon"></div>
+                            <div>
+                                {{ icon.title }}
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <div class="toolbar-actions">
+                    <div class="btn-group">
+                        <button
+                                class="btn btn-extra-large btn-default">
+                            <div
+                                    class="fa fa-2x fa-database"></div>
+                            <div>
+                                bbb
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+            </header>
+
+        <!--</div>-->
+
+    </div>
+
+</div>
