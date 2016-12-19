@@ -21,9 +21,18 @@ module.exports = angular => {
     const app = angular.module(module, []);
 
     app
-        .controller(`${module}.DbConnectionCtrl`, function (currentConnection, databaseList) {
+        .controller(`${module}.DbConnectionCtrl`, function (currentConnection, databaseList, $stateParams) {
 
+            this.currentDb = $stateParams.db;
             this.databaseList = databaseList;
+
+            this.icons = [{
+                icon: "fa-home",
+                title: "ttt"
+            }, {
+                icon: "fa-home",
+                title: "ttt"
+            }];
 
         })
         .factory(`${module}.dbConnectionResolve`, () => {
@@ -48,32 +57,37 @@ module.exports = angular => {
         })
         .factory(`${module}.dbConnectionTpl`, () => fs.readFileSync(`${__dirname}/views/dbConnection.html`))
         .factory(`${module}.strategy`, require("./lib/strategy"))
-        .factory(`${module}.connectForm`, () => {
+        .factory(`${module}.connectForm`, ($translate) => {
 
             return {
                 type: "object",
                 properties: {
                     host: {
+                        title: $translate.instant("DB.HOST"),
                         type: "string",
                         default: "localhost"
                     },
                     user: {
+                        title: $translate.instant("DB.USER"),
                         type: "string"
                     },
                     password: {
+                        title: $translate.instant("DB.PASSWORD"),
                         type: "string",
                         "x-schema-form": {
                             type: "password"
                         }
                     },
                     database: {
+                        title: $translate.instant("DB.DATABASE"),
                         type: "string"
                     },
                     port: {
-                        type: "integer",
                         default: 3306,
+                        exclusiveMinimum: true,
                         minimum: 0,
-                        exclusiveMinimum: true
+                        title: $translate.instant("DB.PORT"),
+                        type: "integer"
                     }
                 }
             };
