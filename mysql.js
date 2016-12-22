@@ -35,26 +35,22 @@ module.exports = angular => {
             }];
 
         })
-        .factory(`${module}.dbConnectionResolve`, () => {
+        .factory(`${module}.dbConnectionResolve`, () => currentConnection => currentConnection.strategy.dbList()
+            .then(result => {
 
-            return currentConnection => currentConnection.dbList()
-                .then(result => {
+                const databases = [];
 
-                    const databases = [];
+                return result.reduce((thenable, database) => thenable
+                    .then(() => currentConnection.strategy.tableList(database))
+                    .then(tables => {
+                        databases.push({
+                            database,
+                            tables
+                        });
+                    }), Promise.resolve())
+                        .then(() => databases);
 
-                    return result.reduce((thenable, database) => thenable
-                        .then(() => currentConnection.tableList(database))
-                        .then(tables => {
-                            databases.push({
-                                database,
-                                tables
-                            });
-                        }), Promise.resolve())
-                            .then(() => databases);
-
-                });
-
-        })
+            }))
         .factory(`${module}.dbConnectionTpl`, () => fs.readFileSync(`${__dirname}/views/dbConnection.html`))
         .factory(`${module}.strategy`, require("./lib/strategy"))
         .factory(`${module}.connectForm`, ($translate) => {
