@@ -2,18 +2,12 @@
  * mysql
  */
 
-"use strict";
-
-
 /* Node modules */
 const fs = require("fs");
 
-
 /* Third-party modules */
 
-
 /* Files */
-
 
 module.exports = angular => {
 
