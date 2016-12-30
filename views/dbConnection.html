@@ -4,21 +4,9 @@
 
         <div class="row">
 
-            <ul class="nav nav--side">
-
-                <li>
-
-                    <a
-                        ng-repeat="db in vm.databaseList"
-                        ui-sref="^.connection({ db: db.database })"
-                        class="nav-group-item"
-                        ng-class="{ active: db.database === vm.currentDb }">
-                        <span class="icon fa fa-database"></span>
-                        {{ db.database }}
-                    </a>
-                </li>
-
-            </ul>
+            <ndb-tree
+                data="vm.databaseList">
+            </ndb-tree>
 
         </div>
 
@@ -29,67 +17,3 @@
     </div>
 
 </div>
-
-
-<!--<div class="pane-group">-->
-
-    <!--<div class="pane pane-sm sidebar">-->
-
-        <!--<nav class="nav-group">-->
-
-            <!--<a-->
-                <!--ng-repeat="db in vm.databaseList"-->
-                <!--ui-sref="^.connection({ db: db.database })"-->
-                <!--class="nav-group-item"-->
-                <!--ng-class="{ active: db.database === vm.currentDb }">-->
-                <!--<span class="fa fa-database"></span>-->
-                <!--{{ db.database }}-->
-            <!--</a>-->
-
-        <!--</nav>-->
-
-    <!--</div>-->
-
-    <!--<div class="pane">-->
-
-        <!--&lt;!&ndash;<div class="padded-more">&ndash;&gt;-->
-
-            <!--<header class="toolbar toolbar-header">-->
-
-                <!--<div class="toolbar-actions">-->
-                    <!--<div class="btn-group">-->
-                        <!--<button-->
-                            <!--ng-repeat="icon in vm.icons"-->
-                            <!--class="btn btn-extra-large btn-default">-->
-                            <!--<div-->
-                                <!--class="fa fa-2x"-->
-                                <!--ng-class="icon.icon"></div>-->
-                            <!--<div>-->
-                                <!--{{ icon.title }}-->
-                            <!--</div>-->
-                        <!--</button>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-
-
-                <!--<div class="toolbar-actions">-->
-                    <!--<div class="btn-group">-->
-                        <!--<button-->
-                                <!--class="btn btn-extra-large btn-default">-->
-                            <!--<div-->
-                                    <!--class="fa fa-2x fa-database"></div>-->
-                            <!--<div>-->
-                                <!--bbb-->
-                            <!--</div>-->
-                        <!--</button>-->
-                    <!--</div>-->
-                <!--</div>-->
-
-            <!--</header>-->
-
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-    <!--</div>-->
-
-<!--</div>-->
