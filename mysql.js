@@ -15,20 +15,31 @@ module.exports = angular => {
     const app = angular.module(module, []);
 
     app
-        .controller(`${module}.DbConnectionCtrl`, function (currentConnection, databaseList, $stateParams) {
+        .controller("query", function (connections, $scope, $stateParams) {
 
-            this.currentDb = $stateParams.db;
-            this.databaseList = databaseList;
+            this.connection = connections.get($stateParams.connection);
+            this.database = "browserspy";
+            this.query = null;
+            this.output = {
+                fields: [],
+                result: []
+            };
 
-            this.icons = [{
-                icon: "fa-home",
-                title: "ttt"
-            }, {
-                icon: "fa-home",
-                title: "ttt"
-            }];
+            console.log(`USE ${this.database}; ${this.query}`);
+
+            this.submit = () => this.connection.query(`USE ${this.database}; ${this.query}`)
+                .then(({ fields, result }) => {
+                    this.output.fields = fields;
+                    this.output.result = result;
+
+                    $scope.$apply();
+                })
+                .catch(err => {
+                    console.error(err);
+                });
 
         })
+        .controller(`${module}.DbConnectionCtrl`, require("./lib/dbConnection"))
         .factory(`${module}.dbConnectionResolve`, () => currentConnection => currentConnection.strategy.dbList()
             .then(result => {
 
@@ -37,10 +48,22 @@ module.exports = angular => {
                 return result.reduce((thenable, database) => thenable
                     .then(() => currentConnection.strategy.tableList(database))
                     .then(tables => {
+
                         databases.push({
-                            database,
-                            tables
+                            children: tables.map(({ name, type }) => ({
+                                icon: "fa-table",
+                                params: {
+                                    database,
+                                    table: name
+                                },
+                                value: name
+                            })),
+                            params: {
+                                database
+                            },
+                            value: database
                         });
+
                     }), Promise.resolve())
                         .then(() => databases);
 

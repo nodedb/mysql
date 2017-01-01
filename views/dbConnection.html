@@ -5,14 +5,101 @@
         <div class="row">
 
             <ndb-tree
-                data="vm.databaseList">
+                data="vm.databaseList"
+                emitter="vm.emitter">
             </ndb-tree>
 
         </div>
 
     </div>
 
-    <div class="body-section">
+    <div class="main-section">
+
+        <div class="header-section">
+
+            <nav class="navbar navbar-default border--no-radius">
+
+                <ul class="nav navbar-nav">
+
+                    <li
+                        ng-repeat="nav in vm.nav">
+
+                        <a
+                            href="#"
+                            title="{{ nav.title }}">
+
+                            <span
+                                class="fa-stack fa-lg"
+                                title="{{ nav.title }}">
+                                <i
+                                    ng-repeat="icon in nav.stack"
+                                    class="fa fa-fw"
+                                    ng-class="icon"
+                                    title="{{ nav.title }}"></i>
+                            </span>
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+        <div class="body-section">
+
+            <div ng-controller="query as vm" ng-if="vm.controller.query">
+
+                <div class="body-section__head">
+
+                    <ndb-query-box model="vm.query" mode="sql"></ndb-query-box>
+
+                </div>
+
+                <div class="body-section__divider">
+
+                    <form class="navbar-form navbar-right">
+
+                        <button
+                            type="submit"
+                            ng-click="vm.submit()"
+                            class="btn btn-default">
+                            {{ 'BUTTONS.SUBMIT' | translate }}
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="body-section__result">
+
+                    <table class="table table-striped">
+
+                        <thead>
+                            <tr>
+                                <th ng-repeat="field in vm.output.fields">
+                                    {{ field.name }}
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr ng-repeat="row in vm.output.result">
+                                <td ng-repeat="field in vm.output.fields">
+                                    {{ row[field.name] }}
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
