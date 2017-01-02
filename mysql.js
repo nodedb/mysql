@@ -23,7 +23,7 @@ module.exports = angular => {
             this.query = "";
             this.output = {
                 fields: [],
-                result: []
+                result: [{"id":1,"first_name":"tits"},{"id":2,"first_name":"more tits"},{"id":3,"first_name":"spank"}]
             };
 
             this.submit = () => Promise.resolve()
