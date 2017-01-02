@@ -19,6 +19,7 @@ module.exports = angular => {
 
             this.connection = connections.get($stateParams.connection);
             this.database = $stateParams.db;
+            this.error = null;
             this.query = "";
             this.output = {
                 fields: [],
@@ -37,14 +38,12 @@ module.exports = angular => {
                     }
                 })
                 .then(({ fields, result }) => {
+                    this.error = null;
                     this.output.fields = fields;
                     this.output.result = result;
-
-                    $scope.$apply();
                 })
-                .catch(err => {
-                    console.error(err);
-                });
+                .catch(err => this.error = err)
+                .then(() => $scope.$apply());
 
             hotkeys.add({
                 combo: "mod+enter",
