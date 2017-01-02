@@ -15,7 +15,7 @@ module.exports = angular => {
     const app = angular.module(module, []);
 
     app
-        .controller("query", function (connections, $scope, $stateParams) {
+        .controller("query", function (connections, hotkeys, $scope, $stateParams, $translate) {
 
             this.connection = connections.get($stateParams.connection);
             this.database = $stateParams.db;
@@ -37,8 +37,6 @@ module.exports = angular => {
                     }
                 })
                 .then(({ fields, result }) => {
-                console.log(JSON.stringify(fields, null, 2));
-                console.log(JSON.stringify(result, null, 2));
                     this.output.fields = fields;
                     this.output.result = result;
 
@@ -47,6 +45,15 @@ module.exports = angular => {
                 .catch(err => {
                     console.error(err);
                 });
+
+            hotkeys.add({
+                combo: "mod+enter",
+                allowIn: [
+                    "TEXTAREA"
+                ],
+                description: $translate.instant("HELP.EXECUTE"),
+                callback: () => this.submit()
+            });
 
         })
         .controller(`${module}.DbConnectionCtrl`, require("./lib/dbConnection"))
