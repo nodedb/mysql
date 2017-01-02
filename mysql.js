@@ -18,17 +18,27 @@ module.exports = angular => {
         .controller("query", function (connections, $scope, $stateParams) {
 
             this.connection = connections.get($stateParams.connection);
-            this.database = "browserspy";
-            this.query = null;
+            this.database = $stateParams.db;
+            this.query = "";
             this.output = {
                 fields: [],
                 result: []
             };
 
-            console.log(`USE ${this.database}; ${this.query}`);
-
-            this.submit = () => this.connection.query(`USE ${this.database}; ${this.query}`)
+            this.submit = () => Promise.resolve()
+                .then(() => {
+                    if (this.query) {
+                        return this.connection.query(`USE ${this.database}; ${this.query}`)
+                    } else {
+                        return {
+                            fields: [],
+                            result: []
+                        };
+                    }
+                })
                 .then(({ fields, result }) => {
+                console.log(JSON.stringify(fields, null, 2));
+                console.log(JSON.stringify(result, null, 2));
                     this.output.fields = fields;
                     this.output.result = result;
 
@@ -40,34 +50,7 @@ module.exports = angular => {
 
         })
         .controller(`${module}.DbConnectionCtrl`, require("./lib/dbConnection"))
-        .factory(`${module}.dbConnectionResolve`, () => currentConnection => currentConnection.strategy.dbList()
-            .then(result => {
-
-                const databases = [];
-
-                return result.reduce((thenable, database) => thenable
-                    .then(() => currentConnection.strategy.tableList(database))
-                    .then(tables => {
-
-                        databases.push({
-                            children: tables.map(({ name, type }) => ({
-                                icon: "fa-table",
-                                params: {
-                                    database,
-                                    table: name
-                                },
-                                value: name
-                            })),
-                            params: {
-                                database
-                            },
-                            value: database
-                        });
-
-                    }), Promise.resolve())
-                        .then(() => databases);
-
-            }))
+        .factory(`${module}.dbConnectionResolve`, () => currentConnection => currentConnection.strategy.dbList())
         .factory(`${module}.dbConnectionTpl`, () => fs.readFileSync(`${__dirname}/views/dbConnection.html`))
         .factory(`${module}.strategy`, require("./lib/strategy"))
         .factory(`${module}.connectForm`, ($translate) => {

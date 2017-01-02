@@ -2,12 +2,32 @@
 
     <div class="menu-section">
 
-        <div class="row">
+        <div class="form-group">
 
-            <ndb-tree
-                data="vm.databaseList"
-                emitter="vm.emitter">
-            </ndb-tree>
+            <label for="db_select">
+                {{ 'SIDEBAR.DATABASE' | translate }}
+            </label>
+
+            <select
+                class="form-control"
+                id="db_select"
+                ng-change="vm.changeDb()"
+                ng-model="vm.database"
+                ng-options="db as db for db in vm.databaseList"></select>
+
+        </div>
+
+        <div>
+
+            <strong>
+                {{ 'SIDEBAR.TABLES' | translate }}
+            </strong>
+
+            <div class="row">
+                <ndb-tree
+                    data="vm.tables">
+                </ndb-tree>
+            </div>
 
         </div>
 
@@ -22,20 +42,18 @@
                 <ul class="nav navbar-nav">
 
                     <li
-                        ng-repeat="nav in vm.nav">
+                        ng-repeat="nav in vm.nav"
+                        ng-class="{ active: nav.active }">
 
                         <a
-                            href="#"
-                            title="{{ nav.title }}">
+                            href="#">
 
                             <span
-                                class="fa-stack fa-lg"
-                                title="{{ nav.title }}">
+                                class="fa-stack fa-lg">
                                 <i
                                     ng-repeat="icon in nav.stack"
                                     class="fa fa-fw"
-                                    ng-class="icon"
-                                    title="{{ nav.title }}"></i>
+                                    ng-class="icon"></i>
                             </span>
 
                         </a>
