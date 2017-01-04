@@ -25,7 +25,9 @@
 
             <div class="row">
                 <ndb-tree
-                    data="vm.tables">
+                    active="vm.activeTable"
+                    data="vm.tables"
+                    emitter="vm.changeTable">
                 </ndb-tree>
             </div>
 
@@ -46,7 +48,9 @@
                         ng-class="{ active: nav.active }">
 
                         <a
-                            href="#">
+                            ndb-disabled
+                            ui-sref=".({ params: nav.params })"
+                            title="{{ nav.title }}">
 
                             <span
                                 class="fa-stack fa-lg">
