@@ -45,11 +45,31 @@
 
                     <li
                         ng-repeat="nav in vm.nav"
-                        ng-class="{ active: nav.active }">
+                        ng-class="{
+                            active: nav.active,
+                            disabled: nav.disabled
+                        }">
 
+                        <!-- Enabled - allow link to be clicked -->
                         <a
-                            ndb-disabled
+                            ng-if="!nav.disabled"
                             ui-sref=".({ params: nav.params })"
+                            title="{{ nav.title }}">
+
+                            <span
+                                class="fa-stack fa-lg">
+                                <i
+                                    ng-repeat="icon in nav.stack"
+                                    class="fa fa-fw"
+                                    ng-class="icon"></i>
+                            </span>
+
+                        </a>
+
+                        <!-- Disabled - don't allow linked to be clicked -->
+                        <a
+                            ng-if="nav.disabled"
+                            ui-sref="."
                             title="{{ nav.title }}">
 
                             <span
