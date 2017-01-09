@@ -15,49 +15,6 @@ module.exports = angular => {
     const app = angular.module(module, []);
 
     app
-        // .controller("query", function (connections, hotkeys, $scope, $stateParams, $translate) {
-        //
-        //     this.connection = connections.get($stateParams.connection);
-        //     this.database = $stateParams.db;
-        //     this.error = null;
-        //     this.query = "";
-        //     this.output = {
-        //         fields: [],
-        //         result: []
-        //     };
-        //
-        //     this.submit = () => Promise.resolve()
-        //         .then(() => {
-        //             if (this.query) {
-        //                 return this.connection.query(`USE ${this.database}; ${this.query}`)
-        //             } else {
-        //                 return {
-        //                     fields: [],
-        //                     result: []
-        //                 };
-        //             }
-        //         })
-        //         .then(({ fields, result }) => {
-        //             this.error = null;
-        //             this.output.fields = fields;
-        //             this.output.result = result;
-        //         })
-        //         .catch(err => this.error = err)
-        //         .then(() => $scope.$apply());
-        //
-        //     hotkeys.add({
-        //         combo: "mod+enter",
-        //         allowIn: [
-        //             "TEXTAREA"
-        //         ],
-        //         description: $translate.instant("HELP.EXECUTE"),
-        //         callback: () => this.submit()
-        //     });
-        //
-        // })
-        // .controller(`${module}.DbConnectionCtrl`, require("./lib/dbConnection"))
-        // .factory(`${module}.dbConnectionResolve`, () => currentConnection => currentConnection.strategy.dbList())
-        // .factory(`${module}.dbConnectionTpl`, () => fs.readFileSync(`${__dirname}/views/dbConnection.html`))
         .controller(`${module}.contentCtrl`, require("./lib/contentCtrl"))
         .controller(`${module}.queryCtrl`, require("./lib/queryCtrl"))
         .factory(`${module}.strategy`, require("./lib/strategy"))
