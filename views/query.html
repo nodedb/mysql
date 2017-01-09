@@ -21,6 +21,22 @@
 
 <div class="body-section__result">
 
-    result
+    <div ng-if="vm.error" class="container-fluid">
+
+        <div class="alert alert-danger">
+            <strong>
+                {{ 'ERROR.LAST' | translate }}
+            </strong>
+
+            <p>{{ vm.error.message }}</p>
+        </div>
+
+    </div>
+
+    <ndb-table
+        body="vm.output.result"
+        fields="vm.output.fields"
+        name="name">
+    </ndb-table>
 
 </div>
