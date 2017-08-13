@@ -38,9 +38,3 @@ jspm_packages
 
 .idea
 .DS_Store
-build
-/tmp/
-/src/styles/**/*.css
-/src/styles/**/*.css.map
-/.sass-cache/
-/drivers

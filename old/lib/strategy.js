@@ -10,7 +10,7 @@ const path = require("path");
 
 
 /* Third-party modules */
-const mysql = require("mysql");
+const mysql = require("old/mysql");
 
 
 /* Files */

@@ -1,8 +1,29 @@
 {
-  "main": "./mysql",
+  "name": "@nodedb/mysql",
   "driverName": "MySQL",
+  "version": "0.0.0",
+  "description": "MySQL driver for NodeDB",
+  "main": "./mysql",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodedb/mysql.git"
+  },
+  "keywords": [
+    "mariadb",
+    "mssql",
+    "mysql",
+    "nodedb"
+  ],
+  "author": "Guerrilla Software Ltd (https://guerrilla.software)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nodedb/mysql/issues"
+  },
+  "homepage": "https://github.com/nodedb/mysql#readme",
   "dependencies": {
-    "lodash": "^4.17.2",
-    "mysql": "^2.12.0"
+    "mysql": "^2.14.1"
   }
 }
