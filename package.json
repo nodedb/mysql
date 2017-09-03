@@ -1,6 +1,5 @@
 {
   "name": "@nodedb/mysql",
-  "driverName": "MySQL",
   "version": "0.0.0",
   "description": "MySQL driver for NodeDB",
   "main": "./mysql",
@@ -24,6 +23,7 @@
   },
   "homepage": "https://github.com/nodedb/mysql#readme",
   "dependencies": {
+    "lodash": "^4.17.4",
     "mysql": "^2.14.1"
   }
 }
