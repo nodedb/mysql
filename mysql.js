@@ -82,6 +82,10 @@ exports.default = class MySQL extends EventEmitter {
     }];
   }
 
+  connectionString () {
+    return `${this.params.user}@${this.params.host}`;
+  }
+
   getPooledConnection () {
     if (!this.connection) {
       this.logger('trace', 'Created new MySQL pooled connection', {
@@ -205,14 +209,14 @@ exports.default = class MySQL extends EventEmitter {
           }, {
             name: 'Events',
             icon: 'clock-o',
-            contents: () => this.query('SELECT ? FROM ? WHERE BINARY ? = ?? ORDER BY ?', [
-              'EVENT_NAME',
+            contents: () => this.query('SELECT * FROM ??.?? WHERE BINARY ?? = ? ORDER BY ??', [
+              'information_schema',
               'EVENTS',
               'EVENT_SCHEMA',
               Database,
               'EVENT_NAME',
             ]).then(({ result }) => result.map(table => ({
-              name: table.Trigger,
+              name: table.EVENT_NAME,
               icon: 'clock-o',
             }))),
           }];
