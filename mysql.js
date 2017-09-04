@@ -83,7 +83,7 @@ exports.default = class MySQL extends EventEmitter {
   }
 
   connectionString () {
-    return `${this.params.user}@${this.params.host}`;
+    return `${this.params.user}@${this.params.host}:${this.params.port}`;
   }
 
   getPooledConnection () {
