@@ -110,9 +110,15 @@ exports.default = class MySQL extends EventEmitter {
     });
   }
 
-  query (sql, values = []) {
+  query (db, sql, values = []) {
     return this.getPooledConnection()
       .then(connection => new Promise((resolve, reject) => {
+        if (db) {
+          sql = `USE ??; ${sql};`;
+
+          values.unshift(db);
+        }
+
         const query = connection.query(sql, values);
 
         this.logger('trace', 'Executing new MySQL query', {
@@ -155,72 +161,76 @@ exports.default = class MySQL extends EventEmitter {
   }
 
   tableOfContents () {
-    return this.query('SHOW DATABASES')
+    return this.query(null, 'SHOW DATABASES')
       .then(({ result }) => result.map(({ Database }) => ({
         name: Database,
         icon: 'database',
-        contents: () => {
-          return [{
-            name: 'Tables',
+        db: Database,
+        contents: () => [{
+          name: 'Tables',
+          icon: 'table',
+          db: Database,
+          contents: () => this.query(null, 'SHOW TABLES FROM ??', [
+            Database
+          ]).then(({ result }) => result.map(table => ({
+            name: table[`Tables_in_${Database}`],
             icon: 'table',
-            contents: () => this.query('SHOW TABLES FROM ??', [
-              Database
-            ]).then(({ result }) => result.map(table => ({
-              name: table[`Tables_in_${Database}`],
-              icon: 'table',
-            }))),
-          }, {
-            name: 'Views',
+          }))),
+        }, {
+          name: 'Views',
+          icon: 'eye',
+          db: Database,
+          contents: () => this.query(null, 'SHOW FULL TABLES IN ?? WHERE TABLE_TYPE LIKE ?', [
+            Database,
+            'VIEW'
+          ]).then(({ result }) => result.map(table => ({
+            name: table[`Tables_in_${Database}`],
             icon: 'eye',
-            contents: () => this.query('SHOW FULL TABLES IN ?? WHERE TABLE_TYPE LIKE ?', [
-              Database,
-              'VIEW'
-            ]).then(({ result }) => result.map(table => ({
-              name: table[`Tables_in_${Database}`],
-              icon: 'eye',
-            }))),
-          }, {
-            name: 'Stored Procedures',
+          }))),
+        }, {
+          name: 'Stored Procedures',
+          icon: 'cog',
+          db: Database,
+          contents: () => this.query(null, 'SHOW PROCEDURE STATUS WHERE Db = ?', [
+            Database,
+          ]).then(({ result }) => result.map(table => ({
+            name: table.Name,
             icon: 'cog',
-            contents: () => this.query('SHOW PROCEDURE STATUS WHERE Db = ?', [
-              Database,
-            ]).then(({ result }) => result.map(table => ({
-              name: table.Name,
-              icon: 'cog',
-            }))),
-          }, {
-            name: 'Functions',
+          }))),
+        }, {
+          name: 'Functions',
+          icon: 'exclamation',
+          db: Database,
+          contents: () => this.query(null, 'SHOW FUNCTION STATUS WHERE Db = ?', [
+            Database,
+          ]).then(({ result }) => result.map(table => ({
+            name: table.Name,
             icon: 'exclamation',
-            contents: () => this.query('SHOW FUNCTION STATUS WHERE Db = ?', [
-              Database,
-            ]).then(({ result }) => result.map(table => ({
-              name: table.Name,
-              icon: 'exclamation',
-            }))),
-          }, {
-            name: 'Triggers',
+          }))),
+        }, {
+          name: 'Triggers',
+          icon: 'bolt',
+          db: Database,
+          contents: () => this.query(null, null, 'SHOW TRIGGERS FROM ??', [
+            Database,
+          ]).then(({ result }) => result.map(table => ({
+            name: table.Trigger,
             icon: 'bolt',
-            contents: () => this.query('SHOW TRIGGERS FROM ??', [
-              Database,
-            ]).then(({ result }) => result.map(table => ({
-              name: table.Trigger,
-              icon: 'bolt',
-            }))),
-          }, {
-            name: 'Events',
+          }))),
+        }, {
+          name: 'Events',
+          icon: 'clock-o',
+          db: Database,
+          contents: () => this.query('information_schema', null, 'SELECT * FROM ?? WHERE BINARY ?? = ? ORDER BY ??', [
+            'EVENTS',
+            'EVENT_SCHEMA',
+            Database,
+            'EVENT_NAME',
+          ]).then(({ result }) => result.map(table => ({
+            name: table.EVENT_NAME,
             icon: 'clock-o',
-            contents: () => this.query('SELECT * FROM ??.?? WHERE BINARY ?? = ? ORDER BY ??', [
-              'information_schema',
-              'EVENTS',
-              'EVENT_SCHEMA',
-              Database,
-              'EVENT_NAME',
-            ]).then(({ result }) => result.map(table => ({
-              name: table.EVENT_NAME,
-              icon: 'clock-o',
-            }))),
-          }];
-        },
+          }))),
+        }],
       })));
   }
 
