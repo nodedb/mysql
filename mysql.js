@@ -29,6 +29,10 @@ exports.default = class MySQL extends EventEmitter {
     return 'mysql';
   }
 
+  get lang () {
+    return 'sql';
+  }
+
   get name () {
     return 'MySQL';
   }
