@@ -144,7 +144,7 @@ exports.default = class MySQL extends EventEmitter {
         query
           .on('error', err => reject(err))
           .on('fields', (fields, index) => {
-            output.fields = fields;
+            output.fields = fields.map(({ name }) => name);
             output.id = index;
           })
           .on('result', (row, index) => {
@@ -155,7 +155,10 @@ exports.default = class MySQL extends EventEmitter {
             }
           })
           .on('end', () => {
-            resolve(output)
+            resolve({
+              fields: output.fields,
+              result: output.result,
+            })
           });
       }).then(result => this.releasePooledConnection(connection)
         .then(() => result)));
