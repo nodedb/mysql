@@ -90,6 +90,11 @@ exports.default = class MySQL extends EventEmitter {
     return `${this.params.user}@${this.params.host}:${this.params.port}`;
   }
 
+  dbList () {
+    return this.query(null, 'SHOW DATABASES')
+      .then(({ result }) => result.map(({ Database }) => Database));
+  }
+
   getPooledConnection () {
     if (!this.connection) {
       this.logger('trace', 'Created new MySQL pooled connection', {
@@ -165,38 +170,38 @@ exports.default = class MySQL extends EventEmitter {
   }
 
   tableOfContents () {
-    return this.query(null, 'SHOW DATABASES')
-      .then(({ result }) => result.map(({ Database }) => ({
-        name: Database,
+    return this.dbList()
+      .then(dbList => dbList.map(db => ({
+        name: db,
         icon: 'database',
-        db: Database,
+        db,
         contents: () => [{
           name: 'Tables',
           icon: 'table',
-          db: Database,
+          db,
           contents: () => this.query(null, 'SHOW TABLES FROM ??', [
-            Database
+            db
           ]).then(({ result }) => result.map(table => ({
-            name: table[`Tables_in_${Database}`],
+            name: table[`Tables_in_${db}`],
             icon: 'table',
           }))),
         }, {
           name: 'Views',
           icon: 'eye',
-          db: Database,
+          db,
           contents: () => this.query(null, 'SHOW FULL TABLES IN ?? WHERE TABLE_TYPE LIKE ?', [
-            Database,
+            db,
             'VIEW'
           ]).then(({ result }) => result.map(table => ({
-            name: table[`Tables_in_${Database}`],
+            name: table[`Tables_in_${db}`],
             icon: 'eye',
           }))),
         }, {
           name: 'Stored Procedures',
           icon: 'cog',
-          db: Database,
+          db,
           contents: () => this.query(null, 'SHOW PROCEDURE STATUS WHERE Db = ?', [
-            Database,
+            db,
           ]).then(({ result }) => result.map(table => ({
             name: table.Name,
             icon: 'cog',
@@ -204,9 +209,9 @@ exports.default = class MySQL extends EventEmitter {
         }, {
           name: 'Functions',
           icon: 'exclamation',
-          db: Database,
+          db,
           contents: () => this.query(null, 'SHOW FUNCTION STATUS WHERE Db = ?', [
-            Database,
+            db,
           ]).then(({ result }) => result.map(table => ({
             name: table.Name,
             icon: 'exclamation',
@@ -214,9 +219,9 @@ exports.default = class MySQL extends EventEmitter {
         }, {
           name: 'Triggers',
           icon: 'bolt',
-          db: Database,
+          db,
           contents: () => this.query(null, null, 'SHOW TRIGGERS FROM ??', [
-            Database,
+            db,
           ]).then(({ result }) => result.map(table => ({
             name: table.Trigger,
             icon: 'bolt',
@@ -224,11 +229,11 @@ exports.default = class MySQL extends EventEmitter {
         }, {
           name: 'Events',
           icon: 'clock-o',
-          db: Database,
+          db,
           contents: () => this.query('information_schema', null, 'SELECT * FROM ?? WHERE BINARY ?? = ? ORDER BY ??', [
             'EVENTS',
             'EVENT_SCHEMA',
-            Database,
+            db,
             'EVENT_NAME',
           ]).then(({ result }) => result.map(table => ({
             name: table.EVENT_NAME,
