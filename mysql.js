@@ -220,7 +220,7 @@ exports.default = class MySQL extends EventEmitter {
           name: 'Triggers',
           icon: 'bolt',
           db,
-          contents: () => this.query(null, null, 'SHOW TRIGGERS FROM ??', [
+          contents: () => this.query(null, 'SHOW TRIGGERS FROM ??', [
             db,
           ]).then(({ result }) => result.map(table => ({
             name: table.Trigger,
@@ -230,7 +230,7 @@ exports.default = class MySQL extends EventEmitter {
           name: 'Events',
           icon: 'clock-o',
           db,
-          contents: () => this.query('information_schema', null, 'SELECT * FROM ?? WHERE BINARY ?? = ? ORDER BY ??', [
+          contents: () => this.query('information_schema', 'SELECT * FROM ?? WHERE BINARY ?? = ? ORDER BY ??', [
             'EVENTS',
             'EVENT_SCHEMA',
             db,
