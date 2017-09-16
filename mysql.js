@@ -135,7 +135,7 @@ exports.default = class MySQL extends EventEmitter {
         });
 
         const output = {
-          fields: null,
+          fields: [],
           id: null,
           info: null,
           result: []
