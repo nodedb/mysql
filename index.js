@@ -70,9 +70,11 @@ module.exports = class MySQL {
             .then(({ data, fields }) => data.map(item => fields.map(field => {
                 const name = field.name;
 
+                // @todo understand the FieldPacket object
                 return {
                     default: field.default,
                     name,
+                    table: field.table,
                     value: item[name],
                 };
             })));
