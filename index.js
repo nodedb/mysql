@@ -35,49 +35,49 @@ module.exports = class MySQL {
     }
 
     disconnect (connection) {
-        return Promise.resolve()
-            .then(() => {
-                connection.release();
-
-                return undefined;
-            });
+        connection.release();
     }
 
-    query (query, { db = 'mydb', values = [] } = {}) {
-        return this.connect()
-            .then(connection => new Promise((resolve, reject) => {
-                if (db) {
-                    query = `USE ??; ${query}`;
-                    values.unshift(db);
+    query (connection, query, values = []) {
+        return new Promise((resolve, reject) => {
+            connection.query(query, values, (err, data, fields, ...args) => {
+                if (err) {
+                    return reject(err);
                 }
 
-                connection.query(query, values, (err, data, fields) => {
-                    if (err) {
-                        return reject(err);
-                    }
-
-                    if (db) {
-                        fields = fields[1];
-                        data = data[1];
-                    }
-
-                    resolve({
-                        data,
-                        fields,
-                    });
+                resolve({
+                    data,
+                    fields,
                 });
-            }))
-            .then(({ data, fields }) => data.map(item => fields.map(field => {
-                const name = field.name;
+            });
+        })
+        .then((result) => {
+            // @todo - understand how mysql package does this properly
+            const { data, fields } = result;
 
-                // @todo understand the FieldPacket object
-                return {
-                    default: field.default,
-                    name,
-                    table: field.table,
-                    value: item[name],
-                };
-            })));
+            const output = {
+                data: [],
+                fields: [],
+                info: {},
+            };
+
+            if (Array.isArray(data) && Array.isArray(fields)) {
+                /* Query result */
+                output.data = data;
+                output.fields = fields;
+            } else {
+                /* An insert/update or message */
+                output.info = result;
+            }
+
+            return output;
+        });
+    }
+
+    setDb (connection, db) {
+        return this.query(connection, 'USE ??', [
+            db,
+        ]);
     }
 
     static get connection () {
