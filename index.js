@@ -91,7 +91,7 @@ module.exports = class MySQL {
             label: 'PORT',
             key: 'port',
             type: 'number',
-            default: 3306,
+            default: 13306,
             required: true
         }, {
             label: 'USERNAME',
