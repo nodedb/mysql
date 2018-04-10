@@ -35,7 +35,7 @@ module.exports = class MySQL {
     }
 
     disconnect (connection) {
-        connection.release();
+        return connection.release();
     }
 
     query (connection, query, values = []) {
@@ -104,6 +104,14 @@ module.exports = class MySQL {
             default: 'q1w2e3r4',
             type: 'password',
         }];
+    }
+
+    static get displayType () {
+        return 'table';
+    }
+
+    static get lang() {
+        return 'text/x-mysql';
     }
 
     static get logo () {
