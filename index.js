@@ -3,122 +3,55 @@
  */
 
 /* Node modules */
-const { EventEmitter } = require('events');
 const path = require('path');
 
 /* Third-party modules */
-const mysql = require('mysql');
 
 /* Files */
+const Connection = require('./connection');
 
-module.exports = class MySQL {
-    constructor ({ host, password, port, user }) {
-        this.connection = mysql.createPool({
-            host,
-            password,
-            port,
-            user,
-            multipleStatements: true
-        });
-    }
+module.exports =  {
 
-    connect () {
-        return new Promise((resolve, reject) => {
-            this.connection.getConnection((err, connection) => {
-                if (err) {
-                    return reject(err);
-                }
+    createDriver() {
+        return this;
+    },
 
-                resolve(connection);
-            });
-        });
-    }
+    createConnection(opts) {
+        return new Connection(opts);
+    },
 
-    disconnect (connection) {
-        return connection.release();
-    }
+    displayType: 'table',
 
-    query (connection, query, values = []) {
-        return new Promise((resolve, reject) => {
-            connection.query(query, values, (err, data, fields, ...args) => {
-                if (err) {
-                    return reject(err);
-                }
+    id: 'mysql',
 
-                resolve({
-                    data,
-                    fields,
-                });
-            });
-        })
-        .then((result) => {
-            // @todo - understand how mysql package does this properly
-            const { data, fields } = result;
+    lang: 'text/x-mysql',
 
-            const output = {
-                data: [],
-                fields: [],
-                info: {},
-            };
+    loginForm: [{
+        label: 'HOST',
+        key: 'host',
+        type: 'text',
+        default: 'localhost',
+        required: true
+    }, {
+        label: 'PORT',
+        key: 'port',
+        type: 'number',
+        default: 13306,
+        required: true
+    }, {
+        label: 'USERNAME',
+        key: 'user',
+        default: 'root',
+        type: 'text',
+    }, {
+        label: 'PASSWORD',
+        key: 'password',
+        default: 'q1w2e3r4',
+        type: 'password',
+    }],
 
-            if (Array.isArray(data) && Array.isArray(fields)) {
-                /* Query result */
-                output.data = data;
-                output.fields = fields;
-            } else {
-                /* An insert/update or message */
-                output.info = result;
-            }
+    logo: path.join(__dirname, 'logo.png'),
 
-            return output;
-        });
-    }
+    name: 'MySQL-single',
 
-    setDb (connection, db) {
-        return this.query(connection, 'USE ??', [
-            db,
-        ]);
-    }
-
-    static get connection () {
-        return [{
-            label: 'HOST',
-            key: 'host',
-            type: 'text',
-            default: 'localhost',
-            required: true
-        }, {
-            label: 'PORT',
-            key: 'port',
-            type: 'number',
-            default: 13306,
-            required: true
-        }, {
-            label: 'USERNAME',
-            key: 'user',
-            default: 'root',
-            type: 'text',
-        }, {
-            label: 'PASSWORD',
-            key: 'password',
-            default: 'q1w2e3r4',
-            type: 'password',
-        }];
-    }
-
-    static get displayType () {
-        return 'table';
-    }
-
-    static get lang() {
-        return 'text/x-mysql';
-    }
-
-    static get logo () {
-        return path.join(__dirname, 'logo.png');
-    }
-
-    static get name () {
-        return 'MySQL';
-    }
 };
